@@ -65,15 +65,15 @@ async function setupViewer(){
     viewer.renderer.refreshPipeline()
 
     // Import and add a GLB file.
-    await viewer.load("./assets/carro_2.glb")
+    await viewer.load("./assets/carro_3.glb")
 
     // Load an environment map if not set in the glb file
     // await viewer.setEnvironmentMap((await manager.importer!.importSinglePath<ITexture>("./assets/environment.hdr"))!);
 
     // Add some UI for tweak and testing.
-    const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
+    // const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
     // Add plugins to the UI to see their settings.
-    uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
+    // uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
 
 }
 
