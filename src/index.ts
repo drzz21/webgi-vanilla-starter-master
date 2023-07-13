@@ -1,80 +1,87 @@
 import {
-    ViewerApp,
-    AssetManagerPlugin,
-    GBufferPlugin,
-    timeout,
-    ProgressivePlugin,
-    TonemapPlugin,
-    SSRPlugin,
-    SSAOPlugin,
-    DiamondPlugin,
-    FrameFadePlugin,
-    GLTFAnimationPlugin,
-    GroundPlugin,
-    BloomPlugin,
-    TemporalAAPlugin,
-    AnisotropyPlugin,
-    GammaCorrectionPlugin,
+	ViewerApp,
+	AssetManagerPlugin,
+	GBufferPlugin,
+	timeout,
+	ProgressivePlugin,
+	TonemapPlugin,
+	SSRPlugin,
+	SSAOPlugin,
+	DiamondPlugin,
+	FrameFadePlugin,
+	GLTFAnimationPlugin,
+	GroundPlugin,
+	BloomPlugin,
+	TemporalAAPlugin,
+	AnisotropyPlugin,
+	GammaCorrectionPlugin,
+	addBasePlugins,
+	ITexture,
+	TweakpaneUiPlugin,
+	AssetManagerBasicPopupPlugin,
+	CanvasSnipperPlugin,
+	IViewerPlugin,
 
-    addBasePlugins,
-    ITexture, TweakpaneUiPlugin, AssetManagerBasicPopupPlugin, CanvasSnipperPlugin,
+	// Color, // Import THREE.js internals
+	// Texture, // Import THREE.js internals
+} from 'webgi';
+import './styles.css';
 
-    IViewerPlugin,
+async function setupViewer() {
+	// Initialize the viewer
+	const viewer = new ViewerApp({
+		canvas: document.getElementById('webgi-canvas') as HTMLCanvasElement,
+	});
 
-    // Color, // Import THREE.js internals
-    // Texture, // Import THREE.js internals
-} from "webgi";
-import "./styles.css";
+	// Add some plugins
+	const manager = await viewer.addPlugin(AssetManagerPlugin);
 
-async function setupViewer(){
+	// Add a popup(in HTML) with download progress when any asset is downloading.
+	await viewer.addPlugin(AssetManagerBasicPopupPlugin);
 
-    // Initialize the viewer
-    const viewer = new ViewerApp({
-        canvas: document.getElementById('webgi-canvas') as HTMLCanvasElement,
-    })
+	// Add plugins individually.
+	await viewer.addPlugin(GBufferPlugin);
+	await viewer.addPlugin(new ProgressivePlugin(32));
+	await viewer.addPlugin(new TonemapPlugin(true));
+	await viewer.addPlugin(GammaCorrectionPlugin);
+	await viewer.addPlugin(SSRPlugin);
+	await viewer.addPlugin(SSAOPlugin);
+	// await viewer.addPlugin(DiamondPlugin)
+	// await viewer.addPlugin(FrameFadePlugin)
+	// await viewer.addPlugin(GLTFAnimationPlugin)
+	// await viewer.addPlugin(GroundPlugin)
+	await viewer.addPlugin(BloomPlugin);
+	// await viewer.addPlugin(TemporalAAPlugin)
+	// await viewer.addPlugin(AnisotropyPlugin)
+	// and many more...
 
-    // Add some plugins
-    const manager = await viewer.addPlugin(AssetManagerPlugin)
+	// or use this to add all main ones at once.
+	// await addBasePlugins(viewer)
 
-    // Add a popup(in HTML) with download progress when any asset is downloading.
-    await viewer.addPlugin(AssetManagerBasicPopupPlugin)
+	// Add more plugins not available in base, like CanvasSnipperPlugin which has helpers to download an image of the canvas.
+	await viewer.addPlugin(CanvasSnipperPlugin);
 
-    // Add plugins individually.
-    await viewer.addPlugin(GBufferPlugin)
-    await viewer.addPlugin(new ProgressivePlugin(32))
-    await viewer.addPlugin(new TonemapPlugin(true))
-    await viewer.addPlugin(GammaCorrectionPlugin)
-    await viewer.addPlugin(SSRPlugin)
-    await viewer.addPlugin(SSAOPlugin)
-    // await viewer.addPlugin(DiamondPlugin)
-    // await viewer.addPlugin(FrameFadePlugin)
-    // await viewer.addPlugin(GLTFAnimationPlugin)
-    // await viewer.addPlugin(GroundPlugin)
-    await viewer.addPlugin(BloomPlugin)
-    // await viewer.addPlugin(TemporalAAPlugin)
-    // await viewer.addPlugin(AnisotropyPlugin)
-    // and many more...
+	// This must be called once after all plugins are added.
+	viewer.renderer.refreshPipeline();
 
-    // or use this to add all main ones at once.
-    // await addBasePlugins(viewer)
+	// Import and add a GLB file.
+	await viewer.load('./assets/carro_3.glb');
 
-    // Add more plugins not available in base, like CanvasSnipperPlugin which has helpers to download an image of the canvas.
-    await viewer.addPlugin(CanvasSnipperPlugin)
+	const plugin = viewer.getPlugin(TonemapPlugin);
+	if (plugin && plugin.config) {
+		plugin.config.clipBackground = true;
+	}
 
-    // This must be called once after all plugins are added.
-    viewer.renderer.refreshPipeline()
+	// console.log(viewer.getPlugin(TonemapPlugin));
 
-    // Import and add a GLB file.
-    await viewer.load("./assets/carro_3.glb")
+	// Load an environment map if not set in the glb file
+	// await viewer.setEnvironmentMap((await manager.importer!.importSinglePath<ITexture>("./assets/environment.hdr"))!);
 
-    // Load an environment map if not set in the glb file
-    // await viewer.setEnvironmentMap((await manager.importer!.importSinglePath<ITexture>("./assets/environment.hdr"))!);
-
-    // Add some UI for tweak and testing.
-    // const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
-    // Add plugins to the UI to see their settings.
-    // uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
-
+	// Add some UI for tweak and testing.
+	// const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
+	// Add plugins to the UI to see their settings.
+	// uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
 }
 
-setupViewer()
+setupViewer();
+
