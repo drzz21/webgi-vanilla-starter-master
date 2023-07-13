@@ -1,17 +1,34 @@
 body {
   font-family: sans-serif;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 #webgi-canvas {
   width: 100%;
   height: 100%;
-  border-radius: 0.5rem;
+  /* border-radius: 0.5rem; */
 }
 #webgi-canvas-container{
-  width: 100vw;
+  /* width: 98vw; */
   height: 100vh;
   /* margin: 10vh 10vw; */
   border-radius: 0.5rem;
+  /* background-color: red; */
+  position:fixed;
 
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px;
+  /* box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 50px -12px; */
+}
+
+#container{
+  height: 3000px;
+}
+
+#notChido{
+  height: 1000px;
+}
+
+#chido{
+  color: white;
+  font-weight: bold;
+  font-size:10rem;
+  background-color: red;
 }
